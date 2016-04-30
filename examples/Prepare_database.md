@@ -24,7 +24,7 @@ INSERT INTO users (id,user,pass,cookie)VALUES (null,"utente","5f4dcc3b5aa765d61d
 
 You can get the password field with the following command :
 ```	
-echo -n password | md5sum'''
+echo -n password | md5sum
 ```
 	
 where "password" is your password. 
