@@ -146,9 +146,14 @@ function LoginSession($form=true, $autoExit=true)
 	{
 		print "Database error: <br>" . $myerror->getMessage() . "<br/>";
 	}
- 
-	@$sql="select * from ". $this->DBTABLE. " where ".$this->FIELDUSER."='".$_SESSION[$this->SESSIONUSER]. "' and ".$this->FIELDPASS."='".$_SESSION[$this->SESSIONPASS]."'";
+	
+	
+	$USER=$_SESSION[$this->SESSIONUSER];
+	$PASS=$_SESSION[$this->SESSIONPASS];
+	@$sql="select * from ". $this->DBTABLE. " where ". $this->FIELDUSER ."= :USER and ".$this->FIELDPASS."= :PASS and enable=1";
 	$stmt = $dbh->prepare($sql);
+	$stmt->bindParam(":USER", $USER);
+	$stmt->bindParam(":PASS", $PASS);
  
 	//Controllo se la query è andata a buon fine
     if (! $stmt->execute() ) echo '<p>Error in query '.$sql.'</p>';
@@ -169,15 +174,27 @@ function LoginSession($form=true, $autoExit=true)
 		{
 			if ($form==true) @$this->MakeHtmlForm($Error);
 		}else{
-			$sql="select * from ".$this->DBTABLE. " where ".$this->FIELDUSER."='".$_POST["user"]. "' and ".$this->FIELDPASS."='".$_POST["pass"]."'";
+			
+			$USER=$_POST["user"];
+			$PASS=$_POST["pass"];
+			$sql="select * from ".$this->DBTABLE. " where ".$this->FIELDUSER."= :USER and ".$this->FIELDPASS . "= :PASS and enable=1";
 			$stmt = $dbh->prepare($sql);
+			$stmt->bindParam(":USER", $USER);
+			$stmt->bindParam(":PASS", $PASS);
+			
 			if (! $stmt->execute() ) echo'<p>Error in query</p>';
  
 			 $_SESSION[$this->SESSIONUSER]=$_POST["user"] ;
 			 $_SESSION[$this->SESSIONPASS]=md5($_POST["pass"]);
+			 $USER=$_POST["user"];
+			 $PASS=md5($_POST["pass"]);
+			 
  
-			 $sql="select * from ". $this->DBTABLE. " where ".$this->FIELDUSER."='".$_POST["user"]. "' and ".$this->FIELDPASS."='".md5($_POST["pass"])."'";
+			 $sql="select * from ".$this->DBTABLE. " where ".$this->FIELDUSER."= :USER and ".$this->FIELDPASS . "= :PASS and enable=1";
 			 $stmt = $dbh->prepare($sql);
+			 $stmt->bindParam(":USER", $USER);
+			 $stmt->bindParam(":PASS", $PASS);
+			 
 			 if (! $stmt->execute() ) echo'<p>Error in query</p>';
  
 			 //Prelevo lo userid

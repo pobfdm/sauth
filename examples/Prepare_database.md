@@ -14,6 +14,7 @@ CREATE TABLE  "users" (
   "user" varchar(1) ,
   "pass" varchar(256) ,
   "cookie" varchar(256) ,
+  "enable" INTEGER,
   PRIMARY KEY ("id") 
 );
 
